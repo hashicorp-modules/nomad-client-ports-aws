@@ -2,18 +2,11 @@ terraform {
   required_version = ">= 0.9.3"
 }
 
-resource "random_id" "name" {
-  count = "${var.count}"
-
-  byte_length = 4
-  prefix      = "${var.name}-${count.index + 1}-"
-}
-
 # https://www.nomadproject.io/guides/cluster/requirements.html#ports-used
 resource "aws_security_group" "nomad_client" {
-  count = "${var.count}"
+  count = "${var.create ? 1 : 0}"
 
-  name        = "${element(random_id.name.*.hex, count.index)}"
+  name_prefix = "${var.name}-"
   description = "Security Group for ${var.name} Nomad"
   vpc_id      = "${var.vpc_id}"
 
@@ -23,9 +16,9 @@ resource "aws_security_group" "nomad_client" {
 # The port used to run the HTTP server
 # https://www.nomadproject.io/docs/agent/configuration/index.html#http-2
 resource "aws_security_group_rule" "http_tcp" {
-  count = "${var.count}"
+  count = "${var.create ? 1 : 0}"
 
-  security_group_id = "${element(aws_security_group.nomad_client.*.id, count.index)}"
+  security_group_id = "${element(aws_security_group.nomad_client.*.id, 0)}"
   type              = "ingress"
   protocol          = "tcp"
   from_port         = 4646
@@ -39,9 +32,9 @@ resource "aws_security_group_rule" "http_tcp" {
 # traffic for the consensus algorithm (raft)
 # https://www.nomadproject.io/docs/agent/configuration/index.html#rpc-2
 resource "aws_security_group_rule" "rpc_tcp" {
-  count = "${var.count}"
+  count = "${var.create ? 1 : 0}"
 
-  security_group_id = "${element(aws_security_group.nomad_client.*.id, count.index)}"
+  security_group_id = "${element(aws_security_group.nomad_client.*.id, 0)}"
   type              = "ingress"
   protocol          = "tcp"
   from_port         = 4647
@@ -51,9 +44,9 @@ resource "aws_security_group_rule" "rpc_tcp" {
 
 # All outbound traffic - TCP.
 resource "aws_security_group_rule" "outbound_tcp" {
-  count = "${var.count}"
+  count = "${var.create ? 1 : 0}"
 
-  security_group_id = "${element(aws_security_group.nomad_client.*.id, count.index)}"
+  security_group_id = "${element(aws_security_group.nomad_client.*.id, 0)}"
   type              = "egress"
   protocol          = "tcp"
   from_port         = 0
@@ -63,9 +56,9 @@ resource "aws_security_group_rule" "outbound_tcp" {
 
 # All outbound traffic - UDP.
 resource "aws_security_group_rule" "outbound_udp" {
-  count = "${var.count}"
+  count = "${var.create ? 1 : 0}"
 
-  security_group_id = "${element(aws_security_group.nomad_client.*.id, count.index)}"
+  security_group_id = "${element(aws_security_group.nomad_client.*.id, 0)}"
   type              = "egress"
   protocol          = "udp"
   from_port         = 0
