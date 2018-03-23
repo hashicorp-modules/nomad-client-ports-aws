@@ -9,8 +9,7 @@ resource "aws_security_group" "nomad_client" {
   name_prefix = "${var.name}-"
   description = "Security Group for ${var.name} Nomad"
   vpc_id      = "${var.vpc_id}"
-
-  tags = "${merge(var.tags, map("Name", format("%s", var.name)))}"
+  tags        = "${merge(var.tags, map("Name", format("%s", var.name)))}"
 }
 
 # The port used to run the HTTP server
