@@ -2,6 +2,10 @@ terraform {
   required_version = ">= 0.9.3"
 }
 
+provider "aws" {
+  version = "~> 1.12"
+}
+
 # https://www.nomadproject.io/guides/cluster/requirements.html#ports-used
 resource "aws_security_group" "nomad_client" {
   count = "${var.create ? 1 : 0}"
@@ -17,7 +21,7 @@ resource "aws_security_group" "nomad_client" {
 resource "aws_security_group_rule" "http_tcp" {
   count = "${var.create ? 1 : 0}"
 
-  security_group_id = "${element(aws_security_group.nomad_client.*.id, 0)}"
+  security_group_id = "${aws_security_group.nomad_client.id}"
   type              = "ingress"
   protocol          = "tcp"
   from_port         = 4646
@@ -33,7 +37,7 @@ resource "aws_security_group_rule" "http_tcp" {
 resource "aws_security_group_rule" "rpc_tcp" {
   count = "${var.create ? 1 : 0}"
 
-  security_group_id = "${element(aws_security_group.nomad_client.*.id, 0)}"
+  security_group_id = "${aws_security_group.nomad_client.id}"
   type              = "ingress"
   protocol          = "tcp"
   from_port         = 4647
@@ -45,7 +49,7 @@ resource "aws_security_group_rule" "rpc_tcp" {
 resource "aws_security_group_rule" "outbound_tcp" {
   count = "${var.create ? 1 : 0}"
 
-  security_group_id = "${element(aws_security_group.nomad_client.*.id, 0)}"
+  security_group_id = "${aws_security_group.nomad_client.id}"
   type              = "egress"
   protocol          = "tcp"
   from_port         = 0
@@ -57,7 +61,7 @@ resource "aws_security_group_rule" "outbound_tcp" {
 resource "aws_security_group_rule" "outbound_udp" {
   count = "${var.create ? 1 : 0}"
 
-  security_group_id = "${element(aws_security_group.nomad_client.*.id, 0)}"
+  security_group_id = "${aws_security_group.nomad_client.id}"
   type              = "egress"
   protocol          = "udp"
   from_port         = 0

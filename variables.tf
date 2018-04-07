@@ -4,8 +4,8 @@ variable "create" {
 }
 
 variable "name" {
-  default     = "nomad-client-ports-aws"
   description = "Name for resources, defaults to \"nomad-client-ports-aws\"."
+  default     = "nomad-client-ports-aws"
 }
 
 variable "vpc_id" {
@@ -13,12 +13,12 @@ variable "vpc_id" {
 }
 
 variable "cidr_blocks" {
-  type        = "list"
   description = "CIDR blocks for Security Groups."
+  type        = "list"
 }
 
 variable "tags" {
+  description = "Optional map of tags to set on resources, defaults to empty map."
   type        = "map"
   default     = {}
-  description = "Optional map of tags to set on resources, defaults to empty map."
 }
