@@ -1,5 +1,5 @@
 module "nomad_client_ports_aws" {
-  # source = "github.com/hashicorp-modules/nomad-client-ports-aws?ref=f-refactor"
+  # source = "github.com/hashicorp-modules/nomad-client-ports-aws"
   source = "../../../nomad-client-ports-aws"
 
   create      = false
