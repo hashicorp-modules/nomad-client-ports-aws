@@ -2,10 +2,6 @@ terraform {
   required_version = ">= 0.11.6"
 }
 
-provider "aws" {
-  version = "~> 1.12"
-}
-
 # https://www.nomadproject.io/guides/cluster/requirements.html#ports-used
 resource "aws_security_group" "nomad_client" {
   count = "${var.create ? 1 : 0}"
